@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.government.statistics.university.dao.GovStaUniversityMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.government.statistics.university.entity.University" >
+	
+	<id column="UniversityID" property="UniversityID" jdbcType="INTEGER"/>
+	<result column="Password" property="Password" jdbcType="VARCHAR"/>
+	<result column="Manager" property="Manager" jdbcType="VARCHAR"/>
+	<result column="Degree" property="Degree" jdbcType="INTEGER"/>
+	<result column="IsDFG" property="IsDFG" jdbcType="VARCHAR"/>
+	<result column="IsTOO" property="IsTOO" jdbcType="VARCHAR"/>
+	<result column="IsNEF" property="IsNEF" jdbcType="VARCHAR"/>
+	<result column="Description" property="Description" jdbcType="VARCHAR"/>
+	<result column="UniversityName" property="UniversityName" jdbcType="VARCHAR"/>
+	<result column="ProvinceID" property="ProvinceID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	UniversityID,Password,Manager,Degree,IsDFG,IsTOO,IsNEF,Description,UniversityName,ProvinceID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="UniversityId">
+      SELECT LAST_INSERT_ID() AS UniversityId_AI
+    </selectKey>
+    insert into University(UniversityID,Password,Manager,Degree,IsDFG,IsTOO,IsNEF,Description,UniversityName,ProvinceID) values (#{UniversityId_AI},#{Password},#{Manager},#{Degree},#{IsDFG},#{IsTOO},#{IsNEF},#{Description},#{UniversityName},#{ProvinceID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from University where UniversityId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update University set Password=#{Password},Manager=#{Manager},Degree=#{Degree},IsDFG=#{IsDFG},IsTOO=#{IsTOO},IsNEF=#{IsNEF},Description=#{Description},UniversityName=#{UniversityName},ProvinceID=#{ProvinceID}
+    where UniversityId = #{UniversityId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select UniversityID,Password,Manager,Degree,IsDFG,IsTOO,IsNEF,Description,UniversityName,ProvinceID from University
+    where UniversityId = #{UniversityId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(UniversityId) from University
+	<where>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='Manager!=null'>
+			 and Manager like  '%' #{Manager} '%'
+		</if>
+		<if test='Degree!=null'>
+		</if>
+		<if test='IsDFG!=null'>
+		</if>
+		<if test='IsTOO!=null'>
+		</if>
+		<if test='IsNEF!=null'>
+		</if>
+		<if test='Description!=null'>
+			 and Description like  '%' #{Description} '%'
+		</if>
+		<if test='UniversityName!=null'>
+			 and UniversityName like  '%' #{UniversityName} '%'
+		</if>
+		<if test='ProvinceID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select UniversityID,Password,Manager,Degree,IsDFG,IsTOO,IsNEF,Description,UniversityName,ProvinceID from University
+	<where>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='Manager!=null'>
+			 and Manager like  '%' #{Manager} '%'
+		</if>
+		<if test='Degree!=null'>
+		</if>
+		<if test='IsDFG!=null'>
+		</if>
+		<if test='IsTOO!=null'>
+		</if>
+		<if test='IsNEF!=null'>
+		</if>
+		<if test='Description!=null'>
+			 and Description like  '%' #{Description} '%'
+		</if>
+		<if test='UniversityName!=null'>
+			 and UniversityName like  '%' #{UniversityName} '%'
+		</if>
+		<if test='ProvinceID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.studentsearch.requiredcoursescore.dao.EntStuRequiredCourseScoreMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.studentsearch.requiredcoursescore.entity.RequiredCourseScore" >
+	
+	<id column="RequiredCourseScoreID" property="RequiredCourseScoreID" jdbcType="INTEGER"/>
+	<result column="Score" property="Score" jdbcType="VARCHAR"/>
+	<result column="StudentID" property="StudentID" jdbcType="INTEGER"/>
+	<result column="RequiredCourseID" property="RequiredCourseID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	RequiredCourseScoreID,Score,StudentID,RequiredCourseID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="RequiredCourseScoreId">
+      SELECT LAST_INSERT_ID() AS RequiredCourseScoreId_AI
+    </selectKey>
+    insert into RequiredCourseScore(RequiredCourseScoreID,Score,StudentID,RequiredCourseID) values (#{RequiredCourseScoreId_AI},#{Score},#{StudentID},#{RequiredCourseID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from RequiredCourseScore where RequiredCourseScoreId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update RequiredCourseScore set Score=#{Score},StudentID=#{StudentID},RequiredCourseID=#{RequiredCourseID}
+    where RequiredCourseScoreId = #{RequiredCourseScoreId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select RequiredCourseScoreID,Score,StudentID,RequiredCourseID from RequiredCourseScore
+    where RequiredCourseScoreId = #{RequiredCourseScoreId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(RequiredCourseScoreId) from RequiredCourseScore
+	<where>
+		<if test='Score!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='RequiredCourseID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select RequiredCourseScoreID,Score,StudentID,RequiredCourseID from RequiredCourseScore
+	<where>
+		<if test='Score!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='RequiredCourseID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

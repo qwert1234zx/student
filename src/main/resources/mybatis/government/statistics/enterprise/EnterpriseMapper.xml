@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.government.statistics.enterprise.dao.GovStaEnterpriseMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.government.statistics.enterprise.entity.Enterprise" >
+	
+	<id column="EnterpriseID" property="EnterpriseID" jdbcType="INTEGER"/>
+	<result column="Status" property="Status" jdbcType="INTEGER"/>
+	<result column="Password" property="Password" jdbcType="VARCHAR"/>
+	<result column="Manager" property="Manager" jdbcType="VARCHAR"/>
+	<result column="Certification" property="Certification" jdbcType="VARCHAR"/>
+	<result column="BusinessRange" property="BusinessRange" jdbcType="VARCHAR"/>
+	<result column="WebSite" property="WebSite" jdbcType="VARCHAR"/>
+	<result column="IDNumber" property="IDNumber" jdbcType="VARCHAR"/>
+	<result column="IndustryID" property="IndustryID" jdbcType="INTEGER"/>
+	<result column="ProvinceID" property="ProvinceID" jdbcType="INTEGER"/>
+	<result column="EnterpriseName" property="EnterpriseName" jdbcType="VARCHAR"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	EnterpriseID,Status,Password,Manager,Certification,BusinessRange,WebSite,IDNumber,IndustryID,ProvinceID,EnterpriseName
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="EnterpriseId">
+      SELECT LAST_INSERT_ID() AS EnterpriseId_AI
+    </selectKey>
+    insert into Enterprise(EnterpriseID,Status,Password,Manager,Certification,BusinessRange,WebSite,IDNumber,IndustryID,ProvinceID,EnterpriseName) values (#{EnterpriseId_AI},#{Status},#{Password},#{Manager},#{Certification},#{BusinessRange},#{WebSite},#{IDNumber},#{IndustryID},#{ProvinceID},#{EnterpriseName})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Enterprise where EnterpriseId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Enterprise set Status=#{Status},Password=#{Password},Manager=#{Manager},Certification=#{Certification},BusinessRange=#{BusinessRange},WebSite=#{WebSite},IDNumber=#{IDNumber},IndustryID=#{IndustryID},ProvinceID=#{ProvinceID},EnterpriseName=#{EnterpriseName}
+    where EnterpriseId = #{EnterpriseId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select EnterpriseID,Status,Password,Manager,Certification,BusinessRange,WebSite,IDNumber,IndustryID,ProvinceID,EnterpriseName from Enterprise
+    where EnterpriseId = #{EnterpriseId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(EnterpriseId) from Enterprise
+	<where>
+		<if test='Status!=null'>
+		</if>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='Manager!=null'>
+			 and Manager like  '%' #{Manager} '%'
+		</if>
+		<if test='Certification!=null'>
+			 and Certification like  '%' #{Certification} '%'
+		</if>
+		<if test='BusinessRange!=null'>
+			 and BusinessRange like  '%' #{BusinessRange} '%'
+		</if>
+		<if test='WebSite!=null'>
+			 and WebSite like  '%' #{WebSite} '%'
+		</if>
+		<if test='IDNumber!=null'>
+			 and IDNumber like  '%' #{IDNumber} '%'
+		</if>
+		<if test='IndustryID!=null'>
+		</if>
+		<if test='ProvinceID!=null'>
+		</if>
+		<if test='EnterpriseName!=null'>
+			 and EnterpriseName like  '%' #{EnterpriseName} '%'
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select EnterpriseID,Status,Password,Manager,Certification,BusinessRange,WebSite,IDNumber,IndustryID,ProvinceID,EnterpriseName from Enterprise
+	<where>
+		<if test='Status!=null'>
+		</if>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='Manager!=null'>
+			 and Manager like  '%' #{Manager} '%'
+		</if>
+		<if test='Certification!=null'>
+			 and Certification like  '%' #{Certification} '%'
+		</if>
+		<if test='BusinessRange!=null'>
+			 and BusinessRange like  '%' #{BusinessRange} '%'
+		</if>
+		<if test='WebSite!=null'>
+			 and WebSite like  '%' #{WebSite} '%'
+		</if>
+		<if test='IDNumber!=null'>
+			 and IDNumber like  '%' #{IDNumber} '%'
+		</if>
+		<if test='IndustryID!=null'>
+		</if>
+		<if test='ProvinceID!=null'>
+		</if>
+		<if test='EnterpriseName!=null'>
+			 and EnterpriseName like  '%' #{EnterpriseName} '%'
+		</if>
+</where>
+  </select>
+</mapper>

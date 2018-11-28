@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.government.statistics.interviewrecord.dao.GovStaInterviewRecordMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.government.statistics.interviewrecord.entity.InterviewRecord" >
+	
+	<id column="InterviewRecordID" property="InterviewRecordID" jdbcType="INTEGER"/>
+	<result column="InterviewResult" property="InterviewResult" jdbcType="VARCHAR"/>
+	<result column="InterviewerMobile" property="InterviewerMobile" jdbcType="VARCHAR"/>
+	<result column="Interviewer" property="Interviewer" jdbcType="VARCHAR"/>
+	<result column="InterviewStatus" property="InterviewStatus" jdbcType="INTEGER"/>
+	<result column="InterviewTime" property="InterviewTime" jdbcType="DATE"/>
+	<result column="StudentID" property="StudentID" jdbcType="INTEGER"/>
+	<result column="EnterpriseID" property="EnterpriseID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	InterviewRecordID,InterviewResult,InterviewerMobile,Interviewer,InterviewStatus,InterviewTime,StudentID,EnterpriseID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="InterviewRecordId">
+      SELECT LAST_INSERT_ID() AS InterviewRecordId_AI
+    </selectKey>
+    insert into InterviewRecord(InterviewRecordID,InterviewResult,InterviewerMobile,Interviewer,InterviewStatus,InterviewTime,StudentID,EnterpriseID) values (#{InterviewRecordId_AI},#{InterviewResult},#{InterviewerMobile},#{Interviewer},#{InterviewStatus},#{InterviewTime},#{StudentID},#{EnterpriseID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from InterviewRecord where InterviewRecordId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update InterviewRecord set InterviewResult=#{InterviewResult},InterviewerMobile=#{InterviewerMobile},Interviewer=#{Interviewer},InterviewStatus=#{InterviewStatus},InterviewTime=#{InterviewTime},StudentID=#{StudentID},EnterpriseID=#{EnterpriseID}
+    where InterviewRecordId = #{InterviewRecordId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select InterviewRecordID,InterviewResult,InterviewerMobile,Interviewer,InterviewStatus,InterviewTime,StudentID,EnterpriseID from InterviewRecord
+    where InterviewRecordId = #{InterviewRecordId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(InterviewRecordId) from InterviewRecord
+	<where>
+		<if test='InterviewResult!=null'>
+			 and InterviewResult like  '%' #{InterviewResult} '%'
+		</if>
+		<if test='InterviewerMobile!=null'>
+			 and InterviewerMobile like  '%' #{InterviewerMobile} '%'
+		</if>
+		<if test='Interviewer!=null'>
+			 and Interviewer like  '%' #{Interviewer} '%'
+		</if>
+		<if test='InterviewStatus!=null'>
+		</if>
+		<if test='InterviewTime!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='EnterpriseID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select InterviewRecordID,InterviewResult,InterviewerMobile,Interviewer,InterviewStatus,InterviewTime,StudentID,EnterpriseID from InterviewRecord
+	<where>
+		<if test='InterviewResult!=null'>
+			 and InterviewResult like  '%' #{InterviewResult} '%'
+		</if>
+		<if test='InterviewerMobile!=null'>
+			 and InterviewerMobile like  '%' #{InterviewerMobile} '%'
+		</if>
+		<if test='Interviewer!=null'>
+			 and Interviewer like  '%' #{Interviewer} '%'
+		</if>
+		<if test='InterviewStatus!=null'>
+		</if>
+		<if test='InterviewTime!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='EnterpriseID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

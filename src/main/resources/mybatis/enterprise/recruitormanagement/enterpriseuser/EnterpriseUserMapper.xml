@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.recruitormanagement.enterpriseuser.dao.EntRecEnterpriseUserMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.recruitormanagement.enterpriseuser.entity.EnterpriseUser" >
+	
+	<id column="EnterpriseUserID" property="EnterpriseUserID" jdbcType="INTEGER"/>
+	<result column="Password" property="Password" jdbcType="VARCHAR"/>
+	<result column="UserName" property="UserName" jdbcType="VARCHAR"/>
+	<result column="EnterpriseID" property="EnterpriseID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	EnterpriseUserID,Password,UserName,EnterpriseID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="EnterpriseUserId">
+      SELECT LAST_INSERT_ID() AS EnterpriseUserId_AI
+    </selectKey>
+    insert into EnterpriseUser(EnterpriseUserID,Password,UserName,EnterpriseID) values (#{EnterpriseUserId_AI},#{Password},#{UserName},#{EnterpriseID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from EnterpriseUser where EnterpriseUserId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update EnterpriseUser set Password=#{Password},UserName=#{UserName},EnterpriseID=#{EnterpriseID}
+    where EnterpriseUserId = #{EnterpriseUserId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select EnterpriseUserID,Password,UserName,EnterpriseID from EnterpriseUser
+    where EnterpriseUserId = #{EnterpriseUserId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(EnterpriseUserId) from EnterpriseUser
+	<where>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='UserName!=null'>
+			 and UserName like  '%' #{UserName} '%'
+		</if>
+		<if test='EnterpriseID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select EnterpriseUserID,Password,UserName,EnterpriseID from EnterpriseUser
+	<where>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='UserName!=null'>
+			 and UserName like  '%' #{UserName} '%'
+		</if>
+		<if test='EnterpriseID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

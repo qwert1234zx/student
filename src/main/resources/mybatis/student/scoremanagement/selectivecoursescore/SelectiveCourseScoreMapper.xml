@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.student.scoremanagement.selectivecoursescore.dao.StuScoSelectiveCourseScoreMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.student.scoremanagement.selectivecoursescore.entity.SelectiveCourseScore" >
+	
+	<id column="SelectiveCourseScoreID" property="SelectiveCourseScoreID" jdbcType="INTEGER"/>
+	<result column="Score" property="Score" jdbcType="VARCHAR"/>
+	<result column="StudentID" property="StudentID" jdbcType="INTEGER"/>
+	<result column="CourseName" property="CourseName" jdbcType="VARCHAR"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	SelectiveCourseScoreID,Score,StudentID,CourseName
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="SelectiveCourseScoreId">
+      SELECT LAST_INSERT_ID() AS SelectiveCourseScoreId_AI
+    </selectKey>
+    insert into SelectiveCourseScore(SelectiveCourseScoreID,Score,StudentID,CourseName) values (#{SelectiveCourseScoreId_AI},#{Score},#{StudentID},#{CourseName})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from SelectiveCourseScore where SelectiveCourseScoreId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update SelectiveCourseScore set Score=#{Score},StudentID=#{StudentID},CourseName=#{CourseName}
+    where SelectiveCourseScoreId = #{SelectiveCourseScoreId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select SelectiveCourseScoreID,Score,StudentID,CourseName from SelectiveCourseScore
+    where SelectiveCourseScoreId = #{SelectiveCourseScoreId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(SelectiveCourseScoreId) from SelectiveCourseScore
+	<where>
+		<if test='Score!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='CourseName!=null'>
+			 and CourseName like  '%' #{CourseName} '%'
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select SelectiveCourseScoreID,Score,StudentID,CourseName from SelectiveCourseScore
+	<where>
+		<if test='Score!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='CourseName!=null'>
+			 and CourseName like  '%' #{CourseName} '%'
+		</if>
+</where>
+  </select>
+</mapper>

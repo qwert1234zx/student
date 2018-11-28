@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.student.jobsearch.selectedsalarycondition.dao.StuJobSelectedSalaryConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.student.jobsearch.selectedsalarycondition.entity.SelectedSalaryCondition" >
+	
+	<id column="SelectedSalaryConditionID" property="SelectedSalaryConditionID" jdbcType="INTEGER"/>
+	<result column="Salary" property="Salary" jdbcType="VARCHAR"/>
+	<result column="Operation" property="Operation" jdbcType="VARCHAR"/>
+	<result column="GroupNumber" property="GroupNumber" jdbcType="INTEGER"/>
+	<result column="StudentQueryConditionID" property="StudentQueryConditionID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	SelectedSalaryConditionID,Salary,Operation,GroupNumber,StudentQueryConditionID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="SelectedSalaryConditionId">
+      SELECT LAST_INSERT_ID() AS SelectedSalaryConditionId_AI
+    </selectKey>
+    insert into SelectedSalaryCondition(SelectedSalaryConditionID,Salary,Operation,GroupNumber,StudentQueryConditionID) values (#{SelectedSalaryConditionId_AI},#{Salary},#{Operation},#{GroupNumber},#{StudentQueryConditionID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from SelectedSalaryCondition where SelectedSalaryConditionId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update SelectedSalaryCondition set Salary=#{Salary},Operation=#{Operation},GroupNumber=#{GroupNumber},StudentQueryConditionID=#{StudentQueryConditionID}
+    where SelectedSalaryConditionId = #{SelectedSalaryConditionId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select SelectedSalaryConditionID,Salary,Operation,GroupNumber,StudentQueryConditionID from SelectedSalaryCondition
+    where SelectedSalaryConditionId = #{SelectedSalaryConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(SelectedSalaryConditionId) from SelectedSalaryCondition
+	<where>
+		<if test='Salary!=null'>
+		</if>
+		<if test='Operation!=null'>
+			 and Operation like  '%' #{Operation} '%'
+		</if>
+		<if test='GroupNumber!=null'>
+		</if>
+		<if test='StudentQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select SelectedSalaryConditionID,Salary,Operation,GroupNumber,StudentQueryConditionID from SelectedSalaryCondition
+	<where>
+		<if test='Salary!=null'>
+		</if>
+		<if test='Operation!=null'>
+			 and Operation like  '%' #{Operation} '%'
+		</if>
+		<if test='GroupNumber!=null'>
+		</if>
+		<if test='StudentQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

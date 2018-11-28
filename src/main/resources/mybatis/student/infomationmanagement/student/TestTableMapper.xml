@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.student.statistics.dao.TestTableMapper" >
+
+
+  <resultMap id="BaseResultMap" type="universityrecruit.student.statistics.entity.TestTable" >
+	
+	<id column="studentSumisNef" property="studentSumisNef" />
+	<result column="studentSumisToo" property="studentSumisToo" />
+      <result column="studentSumisDfg" property="studentSumisDfg"/>
+      <!--<result column="Birthday" property="birthday"/>-->
+
+  </resultMap>
+
+
+  
+
+
+
+    <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select (
+        SELECT COUNT(InterviewRecord.CandidateID)
+        FROM interviewrecord
+        LEFT JOIN candidate on interviewrecord.CandidateID = candidate.CandidateID
+        LEFT JOIN student on  candidate.StudentID = student.StudentID
+        LEFT JOIN university on  student.UniversityID = university.UniversityID
+        LEFT JOIN job on job.JobID = candidate.JobID
+        LEFT JOIN enterprise on  enterprise.EnterpriseID = job.EnterpriseID
+        where
+        university.IsNEF = 1 and enterprise.EnterpriseID=1 and InterviewRecord.InterviewTime BETWEEN #{start1} and #{end1}) as studentSumisNef,
+
+        (	SELECT COUNT(InterviewRecord.CandidateID)
+        FROM interviewrecord
+        LEFT JOIN candidate on interviewrecord.CandidateID = candidate.CandidateID
+        LEFT JOIN student on  candidate.StudentID = student.StudentID
+        LEFT JOIN university on  student.UniversityID = university.UniversityID
+        LEFT JOIN job on job.JobID = candidate.JobID
+        LEFT JOIN enterprise on  enterprise.EnterpriseID = job.EnterpriseID
+        where
+        university.IsTOO = 1 and enterprise.EnterpriseID=1 and InterviewRecord.InterviewTime BETWEEN #{start1} and #{end1}) as studentSumisToo,
+
+        (	SELECT COUNT(InterviewRecord.CandidateID)
+        FROM interviewrecord
+        LEFT JOIN candidate on interviewrecord.CandidateID = candidate.CandidateID
+        LEFT JOIN student on  candidate.StudentID = student.StudentID
+        LEFT JOIN university on  student.UniversityID = university.UniversityID
+        LEFT JOIN job on job.JobID = candidate.JobID
+        LEFT JOIN enterprise on  enterprise.EnterpriseID = job.EnterpriseID
+        where
+        university.IsDFG = 1 and enterprise.EnterpriseID=1 and InterviewRecord.InterviewTime BETWEEN #{start1} and #{end1})as studentSumisDfg
+    </select>
+
+  <!--<select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from TestTable
+	<where>
+		<if test="TextField!=null and TextField!=''">
+			 and TextField like  '%' #{TextField} '%'
+		</if>
+        <if test="num!=null and num!=''">
+            and num = #{num}
+        </if>
+        <if test="start1!=null and end1!=null and start1!='' and end1!=''">
+            and birthday between #{start1} and #{end1}
+        </if>
+</where>
+  </select>-->
+
+   <!-- <select id="selectByCondition" resultMap="enterprisequer" parameterType="java.util.Map">
+        select * from enterprise
+        <where>
+            <if test="name!=null and name!=''">
+                and Name like  '%' #{name} '%'
+            </if>
+            &lt;!&ndash;<if test="num!=null and num!=''">
+                and num = #{num}
+            </if>
+            <if test="start1!=null and end1!=null and start1!='' and end1!=''">
+                and birthday between #{start1} and #{end1}
+            </if>&ndash;&gt;
+        </where>
+    </select>-->
+
+
+</mapper>

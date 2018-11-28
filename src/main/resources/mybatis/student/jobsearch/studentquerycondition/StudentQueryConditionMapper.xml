@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.student.jobsearch.studentquerycondition.dao.StuJobStudentQueryConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.student.jobsearch.studentquerycondition.entity.StudentQueryCondition" >
+
+    <id column="StudentQueryCondition" property="StudentQueryCondition" jdbcType="INTEGER"/>
+    <result column="QueryName" property="QueryName" jdbcType="VARCHAR"/>
+    <result column="StudentID" property="StudentID" jdbcType="INTEGER"/>
+
+</resultMap>
+  
+  <sql id="Base_Column_List">
+	StudentQueryCondition,QueryName,StudentID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="StudentQueryConditionId">
+      SELECT LAST_INSERT_ID() AS StudentQueryConditionId_AI
+    </selectKey>
+    insert into StudentQueryCondition(StudentQueryCondition,QueryName,StudentID) values (#{StudentQueryConditionId_AI},#{QueryName},#{StudentID})
+  </insert>
+
+    <insert id="addStudentquerycondition" parameterType="universityrecruit.student.jobsearch.studentquerycondition.entity.StudentQueryCondition" keyProperty="StudentQueryCondition" useGeneratedKeys="true">
+        insert into StudentQueryCondition(QueryName,StudentID) values (#{QueryName},#{StudentID})
+    </insert>
+
+    <insert id="insertStudentquerycondition" parameterType="map">
+        insert into StudentQueryCondition(QueryName,StudentID) values (#{QueryName},#{Studentid})
+    </insert>
+
+    <insert id="addenterpriseaddresscondition" parameterType="java.util.List" >
+        insert into enterpriseaddresscondition(StudentQueryConditionID,ProvinceID) values
+        <foreach collection="list" item="ids" open="(" close=")" separator="),(">
+        #{ids.StudentQueryConditionID},#{ids.ProvinceID}
+        </foreach>
+    </insert>
+
+  <insert id="addjobcategorycondition" parameterType="java.util.List" >
+    insert into jobcategorycondition(StudentQueryConditionID,JobCategoryID) values
+    <foreach collection="list" item="ids" open="(" close=")" separator="),(">
+      #{ids.StudentQueryConditionID},#{ids.JobCategoryID}
+    </foreach>
+  </insert>
+
+  <insert id="addindustrycondition" parameterType="java.util.List" >
+    insert into industrycondition(StudentQueryConditionID,IndustryID) values
+    <foreach collection="list" item="ids" open="(" close=")" separator="),(">
+      #{ids.StudentQueryConditionID},#{ids.IndustryID}
+    </foreach>
+  </insert>
+
+  <insert id="addenterprisetypecondition" parameterType="java.util.List" >
+    insert into enterprisetypecondition(StudentQueryConditionID,EnterpriseTypeID) values
+    <foreach collection="list" item="ids" open="(" close=")" separator="),(">
+      #{ids.StudentQueryConditionID},#{ids.EnterpriseTypeID}
+    </foreach>
+  </insert>
+
+  <insert id="addother" parameterType="universityrecruit.student.jobsearch.studentquerycondition.entity.Othercondition" >
+    insert into othercondition(StudentQueryConditionID,WorkYearLowerLimit,WorkYearUpperLimit,SalaryLowerLimit,SalaryUpperLimit) values
+      (#{StudentQueryConditionID},#{WorkYearLowerLimit},#{WorkYearUpperLimit},#{SalaryLowerLimit},#{SalaryUpperLimit})
+  </insert>
+
+    <insert id="insertenterpriseaddresscondition" parameterType="map" >
+        insert into enterpriseaddresscondition(StudentQueryConditionID,ProvinceID) values (#{studentQueryCondition},#{provinceid})
+    </insert>
+
+    <insert id="addselectedsalarycondition" parameterType="universityrecruit.student.jobsearch.studentquerycondition.entity.Addjobsearch">
+        insert into selectedsalarycondition(StudentQueryConditionID,Operation,Salary) values (#{studentQueryCondition},#{operation},#{uppersalary})
+    </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from StudentQueryCondition where StudentQueryCondition in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByIdList1" parameterType="List">
+    DELETE  s,i,j,e,ea,o from jobcategorycondition j,industrycondition i,enterpriseaddresscondition ea,enterprisetypecondition e,studentquerycondition s,othercondition o
+    where j.StudentQueryConditionID=s.StudentQueryCondition and i.StudentQueryConditionID=s.StudentQueryCondition and ea.StudentQueryConditionID=s.StudentQueryCondition and e.StudentQueryConditionID=s.StudentQueryCondition and o.StudentQueryConditionID=s.StudentQueryCondition and s.StudentQueryCondition IN
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update StudentQueryCondition set QueryName=#{QueryName},StudentID=#{StudentID}
+    where StudentQueryCondition = #{StudentQueryConditionId}
+  </update>
+
+  <update id="updatestudentquerycondition" parameterType="map">
+    update StudentQueryCondition set QueryName=#{QueryName} where StudentQueryCondition = #{Id}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select StudentQueryCondition,QueryName,StudentID from StudentQueryCondition
+    where StudentQueryCondition = #{StudentQueryConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(StudentQueryCondition) from StudentQueryCondition
+	<where>
+		<if test='QueryName!=null'>
+			 and QueryName like  '%' #{QueryName} '%'
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select StudentQueryCondition,QueryName,StudentID from StudentQueryCondition
+	<where>
+		<if test='QueryName!=null'>
+			 and QueryName like  '%' #{QueryName} '%'
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectQueryCondition" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.StudentQueryCondition" parameterType="Integer">
+    select StudentQueryCondition,QueryName,StudentID from StudentQueryCondition
+    <where>
+      <if test="id!=null">
+        and StudentQueryCondition=#{id}
+      </if>
+    </where>
+  </select>
+
+    <select id="selectProvince" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.Province">
+        select provinceid,provincename from province
+    </select>
+
+  <select id="selectProvinceByid" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.Province">
+    select p.provinceid,provincename from province p,enterpriseaddresscondition e
+    <where>
+      and p.ProvinceID=e.ProvinceID
+      <if test="id!=null">
+        and e.StudentQueryConditionID=#{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectIndustry" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.Industry">
+    select IndustryID,IndustryName from industry
+  </select>
+
+  <select id="selectIndustryByid" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.Industry">
+    select i.IndustryID,IndustryName from industry i,industrycondition ic
+    <where>
+      and i.IndustryID=ic.IndustryID
+      <if test="id!=null">
+        and ic.StudentQueryConditionID=#{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectJobCategory" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.JobCategory">
+    select JobCategoryID,JobCategoryName from jobcategory
+  </select>
+
+  <select id="selectJobCategoryByid" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.JobCategory">
+    select j.JobCategoryID,JobCategoryName from jobcategory j,jobcategorycondition jc
+    <where>
+      and j.JobCategoryID=jc.JobCategoryID
+      <if test="id!=null">
+        and jc.StudentQueryConditionID=#{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectEnterpriseType" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.EnterpriseType">
+    select EnterpriseTypeID,EnterpriseTypeName from enterprisetype
+  </select>
+
+  <select id="selectEnterpriseTypeByid" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.EnterpriseType">
+    select e.EnterpriseTypeID,EnterpriseTypeName from enterprisetype e,enterprisetypecondition ec
+    <where>
+      and e.EnterpriseTypeID=ec.EnterpriseTypeID
+      <if test="id!=null">
+        and ec.StudentQueryConditionID=#{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectResults" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.Results" parameterType="map">
+    select * from enterprise e,job j,province p,enterprisetype et,industry i,jobcategory job
+    where e.EnterpriseID=j.EnterpriseID and e.provinceid=p.provinceid and e.EnterpriseType=et.EnterpriseTypeID and e.IndustryID=i.IndustryID and j.JobCategoryID=job.JobCategoryID
+    <if test="proid!=null and proid.size()!=0">
+      and e.provinceid in
+    <foreach collection="proid" item="ids" open="(" close=")" separator=",">
+      #{ids}
+    </foreach>
+    </if>
+
+    <if test="industryid!=null and industryid.size()!=0">
+      and e.industryid in
+      <foreach collection="industryid" item="ids" open="(" close=")" separator=",">
+        #{ids}
+      </foreach>
+    </if>
+
+    <if test="jobid!=null and jobid.size()!=0">
+      and j.JobCategoryID in
+      <foreach collection="jobid" item="ids" open="(" close=")" separator=",">
+        #{ids}
+      </foreach>
+    </if>
+
+    <if test="entertypeid!=null and entertypeid.size()!=0">
+      and e.EnterpriseType in
+      <foreach collection="entertypeid" item="ids" open="(" close=")" separator=",">
+        #{ids}
+      </foreach>
+    </if>
+
+    <if test="othercondition!=null">
+
+    <if test="othercondition.SalaryLowerLimit!=null">
+      and j.LowerSalary>=#{othercondition.SalaryLowerLimit}
+    </if>
+
+    <if test="othercondition.SalaryUpperLimit!=null">
+      and j.UpperSalary &lt;=#{othercondition.SalaryUpperLimit}
+    </if>
+
+      <if test="othercondition.WorkYearLowerLimit!=null">
+        and j.WorkYearLowerLimit>=#{othercondition.WorkYearLowerLimit}
+      </if>
+
+      <if test="othercondition.WorkYearUpperLimit!=null">
+        and j.WorkYearUpperLimit &lt;=#{othercondition.WorkYearUpperLimit}
+      </if>
+
+    </if>
+  </select>
+
+  <select id="preselectprovince" resultType="Integer" parameterType="Integer">
+    select ProvinceID from enterpriseaddresscondition
+    <where>
+      <if test="ids!=null">
+        and StudentQueryConditionID=#{ids}
+      </if>
+    </where>
+  </select>
+
+  <select id="preselectjob" resultType="Integer" parameterType="Integer">
+    select JobCategoryID from jobcategorycondition
+    <where>
+      <if test="ids!=null">
+        and StudentQueryConditionID=#{ids}
+      </if>
+    </where>
+  </select>
+
+  <select id="preselectindustry" resultType="Integer" parameterType="Integer">
+    select IndustryID from industrycondition
+    <where>
+      <if test="ids!=null">
+        and StudentQueryConditionID=#{ids}
+      </if>
+    </where>
+  </select>
+
+  <select id="preselectentertype" resultType="Integer" parameterType="Integer">
+    select EnterpriseTypeID from enterprisetypecondition
+    <where>
+      <if test="ids!=null">
+        and StudentQueryConditionID=#{ids}
+      </if>
+    </where>
+  </select>
+
+  <select id="preselectother" resultType="universityrecruit.student.jobsearch.studentquerycondition.entity.Othercondition" parameterType="Integer">
+    select * from othercondition
+    <where>
+      <if test="ids!=null">
+        and StudentQueryConditionID=#{ids}
+      </if>
+    </where>
+  </select>
+
+  <delete id="deletepro" parameterType="Integer" >
+    delete from enterpriseaddresscondition where StudentQueryConditionID=#{id}
+  </delete>
+<!--29-->
+  <delete id="deleteproByList" parameterType="List">
+    delete from enterpriseaddresscondition where StudentQueryConditionID in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <delete id="deleteindust" parameterType="Integer">
+    delete from industrycondition where StudentQueryConditionID=#{id}
+  </delete>
+  <!--29-->
+  <delete id="deleteindustByList" parameterType="List">
+    delete from industrycondition where StudentQueryConditionID in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <delete id="deletejob" parameterType="Integer">
+    delete from jobcategorycondition where StudentQueryConditionID=#{id}
+  </delete>
+
+  <!--29-->
+  <delete id="deletejobByList" parameterType="List">
+    delete from jobcategorycondition where StudentQueryConditionID in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <delete id="deletetype" parameterType="Integer">
+    delete from enterprisetypecondition where StudentQueryConditionID=#{id}
+  </delete>
+
+  <!--29-->
+  <delete id="deletetypeByList" parameterType="List">
+    delete from enterprisetypecondition where StudentQueryConditionID in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <delete id="deleteother" parameterType="Integer">
+    delete from othercondition where StudentQueryConditionID=#{id}
+  </delete>
+
+  <!--29-->
+  <delete id="deleteotherByList" parameterType="List">
+    delete from othercondition where StudentQueryConditionID in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+
+</mapper>

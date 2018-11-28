@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="universityrecruit.student.statistics.dao.newStudentInfoDao">
+    <resultMap id="studentResultMap" type="universityrecruit.student.statistics.entity.sorceResult" >
+
+    <id column="RequiredCourseScoreID" property="requiredcourselid" jdbcType="INTEGER"/>
+    <result column="CourseName" property="courseName" jdbcType="VARCHAR"/>
+    <result column="Score" property="score" jdbcType="FLOAT"/>
+
+
+</resultMap>
+
+   <!-- <resultMap id="qyResultMap" type="management.system.testdiagram.testtable.entity.sorceResult1" >
+
+        <id column="IndustryID" property="industryID" jdbcType="INTEGER"/>
+        <result column="IndustryName" property="courseName" jdbcType="VARCHAR"/>
+        <result column="Score" property="score" jdbcType="INTEGER"/>
+
+
+    </resultMap>-->
+
+
+    <select id="getAllStudent" resultMap="studentResultMap">
+        select requiredcourse.CourseName ,requiredcoursescore.Score
+from requiredcourse LEFT JOIN requiredcoursescore
+on requiredcourse.RequiredCourseID=requiredcoursescore.RequiredCourseID
+WHERE requiredcoursescore.StudentID=1
+ORDER BY requiredcoursescore.Score DESC LIMIT 3
+    </select>
+
+
+    <!--<select id="getAllqy" resultMap="qyResultMap">
+        select Industry.IndustryName,count(Candidate.CandidateID) as IndInviSum
+/* 随后计算*/
+from Candidate left join Job   on Candidate.JobID =  Job.JobID
+/* 岗位id相同  面试候选人table和招聘岗位table 2表连接 */
+
+left join Enterprise on Enterprise.EnterpriseID = Job.EnterpriseID
+/*招聘岗位table 和 企业表table 连接*/
+left join Industry on Industry.IndustryID =  Enterprise.IndustryID
+/* 企业表和 行业表连接 */
+
+
+/* 根据行业id分组 */
+where Candidate.StudentID = 1
+
+group by Industry.IndustryID
+    </select>-->
+</mapper>

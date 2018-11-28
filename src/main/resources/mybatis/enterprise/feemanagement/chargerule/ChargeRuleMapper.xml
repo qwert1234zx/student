@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.feemanagement.chargerule.dao.EntFeeChargeRuleMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.feemanagement.chargerule.entity.ChargeRule" >
+	
+	<id column="ChargeRuleID" property="ChargeRuleID" jdbcType="INTEGER"/>
+	<result column="FeePerResume" property="FeePerResume" jdbcType="VARCHAR"/>
+	<result column="EffectiveDate" property="EffectiveDate" jdbcType="DATE"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	ChargeRuleID,FeePerResume,EffectiveDate
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="ChargeRuleId">
+      SELECT LAST_INSERT_ID() AS ChargeRuleId_AI
+    </selectKey>
+    insert into ChargeRule(ChargeRuleID,FeePerResume,EffectiveDate) values (#{ChargeRuleId_AI},#{FeePerResume},#{EffectiveDate})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from ChargeRule where ChargeRuleId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update ChargeRule set FeePerResume=#{FeePerResume},EffectiveDate=#{EffectiveDate}
+    where ChargeRuleId = #{ChargeRuleId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select ChargeRuleID,FeePerResume,EffectiveDate from ChargeRule
+    where ChargeRuleId = #{ChargeRuleId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(ChargeRuleId) from ChargeRule
+	<where>
+		<if test='FeePerResume!=null'>
+		</if>
+		<if test='EffectiveDate!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select ChargeRuleID,FeePerResume,EffectiveDate from ChargeRule
+	<where>
+		<if test='FeePerResume!=null'>
+		</if>
+		<if test='EffectiveDate!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.university.coursemanagement.standardcourse.dao.UniCouStandardCourseMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.university.coursemanagement.standardcourse.entity.StandardCourse" >
+	
+	<id column="StandardCourseID" property="StandardCourseID" jdbcType="INTEGER"/>
+	<result column="CourseName" property="CourseName" jdbcType="VARCHAR"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	StandardCourseID,CourseName
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="StandardCourseId">
+      SELECT LAST_INSERT_ID() AS StandardCourseId_AI
+    </selectKey>
+    insert into StandardCourse(StandardCourseID,CourseName) values (#{StandardCourseId_AI},#{CourseName})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from StandardCourse where StandardCourseId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update StandardCourse set CourseName=#{CourseName}
+    where StandardCourseId = #{StandardCourseId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select StandardCourseID,CourseName from StandardCourse
+    where StandardCourseId = #{StandardCourseId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(StandardCourseId) from StandardCourse
+	<where>
+		<if test='CourseName!=null'>
+			 and CourseName like  '%' #{CourseName} '%'
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select StandardCourseID,CourseName from StandardCourse
+	<where>
+		<if test='CourseName!=null'>
+			 and CourseName like  '%' #{CourseName} '%'
+		</if>
+</where>
+  </select>
+</mapper>

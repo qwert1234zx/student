@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.studentsearch.enterprisequerycondition.dao.EntStuEnterpriseQueryConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.studentsearch.enterprisequerycondition.entity.EnterpriseQueryCondition" >
+	
+	<id column="EnterpriseQueryConditionID" property="EnterpriseQueryConditionID" jdbcType="INTEGER"/>
+	<result column="QueryName" property="QueryName" jdbcType="VARCHAR"/>
+	<result column="EnterpriseUserID" property="EnterpriseUserID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	EnterpriseQueryConditionID,QueryName,EnterpriseUserID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="EnterpriseQueryConditionId">
+      SELECT LAST_INSERT_ID() AS EnterpriseQueryConditionId_AI
+    </selectKey>
+    insert into EnterpriseQueryCondition(EnterpriseQueryConditionID,QueryName,EnterpriseUserID) values (#{EnterpriseQueryConditionId_AI},#{QueryName},#{EnterpriseUserID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from EnterpriseQueryCondition where EnterpriseQueryConditionId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update EnterpriseQueryCondition set QueryName=#{QueryName},EnterpriseUserID=#{EnterpriseUserID}
+    where EnterpriseQueryConditionId = #{EnterpriseQueryConditionId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select EnterpriseQueryConditionID,QueryName,EnterpriseUserID from EnterpriseQueryCondition
+    where EnterpriseQueryConditionId = #{EnterpriseQueryConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(EnterpriseQueryConditionId) from EnterpriseQueryCondition
+	<where>
+		<if test='QueryName!=null'>
+			 and QueryName like  '%' #{QueryName} '%'
+		</if>
+		<if test='EnterpriseUserID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select EnterpriseQueryConditionID,QueryName,EnterpriseUserID from EnterpriseQueryCondition
+	<where>
+		<if test='QueryName!=null'>
+			 and QueryName like  '%' #{QueryName} '%'
+		</if>
+		<if test='EnterpriseUserID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.studentsearch.selectedspecialitycondition.dao.EntStuSelectedSpecialityConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.studentsearch.selectedspecialitycondition.entity.SelectedSpecialityCondition" >
+	
+	<id column="SelectedSpecialityConditionID" property="SelectedSpecialityConditionID" jdbcType="INTEGER"/>
+	<result column="SelectedSpecialityID" property="SelectedSpecialityID" jdbcType="INTEGER"/>
+	<result column="EnterpriseQueryConditionID" property="EnterpriseQueryConditionID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	SelectedSpecialityConditionID,SelectedSpecialityID,EnterpriseQueryConditionID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="SelectedSpecialityConditionId">
+      SELECT LAST_INSERT_ID() AS SelectedSpecialityConditionId_AI
+    </selectKey>
+    insert into SelectedSpecialityCondition(SelectedSpecialityConditionID,SelectedSpecialityID,EnterpriseQueryConditionID) values (#{SelectedSpecialityConditionId_AI},#{SelectedSpecialityID},#{EnterpriseQueryConditionID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from SelectedSpecialityCondition where SelectedSpecialityConditionId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update SelectedSpecialityCondition set SelectedSpecialityID=#{SelectedSpecialityID},EnterpriseQueryConditionID=#{EnterpriseQueryConditionID}
+    where SelectedSpecialityConditionId = #{SelectedSpecialityConditionId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select SelectedSpecialityConditionID,SelectedSpecialityID,EnterpriseQueryConditionID from SelectedSpecialityCondition
+    where SelectedSpecialityConditionId = #{SelectedSpecialityConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(SelectedSpecialityConditionId) from SelectedSpecialityCondition
+	<where>
+		<if test='SelectedSpecialityID!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select SelectedSpecialityConditionID,SelectedSpecialityID,EnterpriseQueryConditionID from SelectedSpecialityCondition
+	<where>
+		<if test='SelectedSpecialityID!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

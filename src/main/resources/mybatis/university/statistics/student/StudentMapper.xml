@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.university.statistics.student.dao.UniStaStudentMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.university.statistics.student.entity.Student" >
+	
+	<id column="StudentID" property="StudentID" jdbcType="INTEGER"/>
+	<result column="Password" property="Password" jdbcType="VARCHAR"/>
+	<result column="Mobile" property="Mobile" jdbcType="VARCHAR"/>
+	<result column="IDNumber" property="IDNumber" jdbcType="VARCHAR"/>
+	<result column="StudentNo" property="StudentNo" jdbcType="VARCHAR"/>
+	<result column="GraduationYear" property="GraduationYear" jdbcType="INTEGER"/>
+	<result column="Grade" property="Grade" jdbcType="INTEGER"/>
+	<result column="Sex" property="Sex" jdbcType="INTEGER"/>
+	<result column="ProvinceID" property="ProvinceID" jdbcType="INTEGER"/>
+	<result column="StudentName" property="StudentName" jdbcType="VARCHAR"/>
+	<result column="DirectionID" property="DirectionID" jdbcType="INTEGER"/>
+	<result column="SpecialityID" property="SpecialityID" jdbcType="INTEGER"/>
+	<result column="AcademyID" property="AcademyID" jdbcType="INTEGER"/>
+	<result column="UniversityID" property="UniversityID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	StudentID,Password,Mobile,IDNumber,StudentNo,GraduationYear,Grade,Sex,ProvinceID,StudentName,DirectionID,SpecialityID,AcademyID,UniversityID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="StudentId">
+      SELECT LAST_INSERT_ID() AS StudentId_AI
+    </selectKey>
+    insert into Student(StudentID,Password,Mobile,IDNumber,StudentNo,GraduationYear,Grade,Sex,ProvinceID,StudentName,DirectionID,SpecialityID,AcademyID,UniversityID) values (#{StudentId_AI},#{Password},#{Mobile},#{IDNumber},#{StudentNo},#{GraduationYear},#{Grade},#{Sex},#{ProvinceID},#{StudentName},#{DirectionID},#{SpecialityID},#{AcademyID},#{UniversityID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Student where StudentId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Student set Password=#{Password},Mobile=#{Mobile},IDNumber=#{IDNumber},StudentNo=#{StudentNo},GraduationYear=#{GraduationYear},Grade=#{Grade},Sex=#{Sex},ProvinceID=#{ProvinceID},StudentName=#{StudentName},DirectionID=#{DirectionID},SpecialityID=#{SpecialityID},AcademyID=#{AcademyID},UniversityID=#{UniversityID}
+    where StudentId = #{StudentId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select StudentID,Password,Mobile,IDNumber,StudentNo,GraduationYear,Grade,Sex,ProvinceID,StudentName,DirectionID,SpecialityID,AcademyID,UniversityID from Student
+    where StudentId = #{StudentId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(StudentId) from Student
+	<where>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='Mobile!=null'>
+			 and Mobile like  '%' #{Mobile} '%'
+		</if>
+		<if test='IDNumber!=null'>
+			 and IDNumber like  '%' #{IDNumber} '%'
+		</if>
+		<if test='StudentNo!=null'>
+			 and StudentNo like  '%' #{StudentNo} '%'
+		</if>
+		<if test='GraduationYear!=null'>
+		</if>
+		<if test='Grade!=null'>
+		</if>
+		<if test='Sex!=null'>
+		</if>
+		<if test='ProvinceID!=null'>
+		</if>
+		<if test='StudentName!=null'>
+			 and StudentName like  '%' #{StudentName} '%'
+		</if>
+		<if test='DirectionID!=null'>
+		</if>
+		<if test='SpecialityID!=null'>
+		</if>
+		<if test='AcademyID!=null'>
+		</if>
+		<if test='UniversityID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select StudentID,Password,Mobile,IDNumber,StudentNo,GraduationYear,Grade,Sex,ProvinceID,StudentName,DirectionID,SpecialityID,AcademyID,UniversityID from Student
+	<where>
+		<if test='Password!=null'>
+			 and Password like  '%' #{Password} '%'
+		</if>
+		<if test='Mobile!=null'>
+			 and Mobile like  '%' #{Mobile} '%'
+		</if>
+		<if test='IDNumber!=null'>
+			 and IDNumber like  '%' #{IDNumber} '%'
+		</if>
+		<if test='StudentNo!=null'>
+			 and StudentNo like  '%' #{StudentNo} '%'
+		</if>
+		<if test='GraduationYear!=null'>
+		</if>
+		<if test='Grade!=null'>
+		</if>
+		<if test='Sex!=null'>
+		</if>
+		<if test='ProvinceID!=null'>
+		</if>
+		<if test='StudentName!=null'>
+			 and StudentName like  '%' #{StudentName} '%'
+		</if>
+		<if test='DirectionID!=null'>
+		</if>
+		<if test='SpecialityID!=null'>
+		</if>
+		<if test='AcademyID!=null'>
+		</if>
+		<if test='UniversityID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

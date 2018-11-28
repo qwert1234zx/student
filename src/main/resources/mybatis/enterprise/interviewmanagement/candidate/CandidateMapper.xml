@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.interviewmanagement.candidate.dao.EntIntCandidateMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.interviewmanagement.candidate.entity.Candidate" >
+	
+	<id column="CandidateID" property="CandidateID" jdbcType="INTEGER"/>
+	<result column="InterviewStatus" property="InterviewStatus" jdbcType="INTEGER"/>
+	<result column="StudentID" property="StudentID" jdbcType="INTEGER"/>
+	<result column="JobID" property="JobID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	CandidateID,InterviewStatus,StudentID,JobID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="CandidateId">
+      SELECT LAST_INSERT_ID() AS CandidateId_AI
+    </selectKey>
+    insert into Candidate(CandidateID,InterviewStatus,StudentID,JobID) values (#{CandidateId_AI},#{InterviewStatus},#{StudentID},#{JobID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Candidate where CandidateId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Candidate set InterviewStatus=#{InterviewStatus},StudentID=#{StudentID},JobID=#{JobID}
+    where CandidateId = #{CandidateId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select CandidateID,InterviewStatus,StudentID,JobID from Candidate
+    where CandidateId = #{CandidateId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(CandidateId) from Candidate
+	<where>
+		<if test='InterviewStatus!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='JobID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select CandidateID,InterviewStatus,StudentID,JobID from Candidate
+	<where>
+		<if test='InterviewStatus!=null'>
+		</if>
+		<if test='StudentID!=null'>
+		</if>
+		<if test='JobID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

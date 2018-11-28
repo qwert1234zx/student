@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.studentsearch.degreetypecondition.dao.EntStuDegreeTypeConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.studentsearch.degreetypecondition.entity.DegreeTypeCondition" >
+	
+	<id column="DegreeTypeConditionID" property="DegreeTypeConditionID" jdbcType="INTEGER"/>
+	<result column="ConditionValue" property="ConditionValue" jdbcType="INTEGER"/>
+	<result column="EnterpriseQueryConditionID" property="EnterpriseQueryConditionID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	DegreeTypeConditionID,ConditionValue,EnterpriseQueryConditionID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="DegreeTypeConditionId">
+      SELECT LAST_INSERT_ID() AS DegreeTypeConditionId_AI
+    </selectKey>
+    insert into DegreeTypeCondition(DegreeTypeConditionID,ConditionValue,EnterpriseQueryConditionID) values (#{DegreeTypeConditionId_AI},#{ConditionValue},#{EnterpriseQueryConditionID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from DegreeTypeCondition where DegreeTypeConditionId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update DegreeTypeCondition set ConditionValue=#{ConditionValue},EnterpriseQueryConditionID=#{EnterpriseQueryConditionID}
+    where DegreeTypeConditionId = #{DegreeTypeConditionId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select DegreeTypeConditionID,ConditionValue,EnterpriseQueryConditionID from DegreeTypeCondition
+    where DegreeTypeConditionId = #{DegreeTypeConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(DegreeTypeConditionId) from DegreeTypeCondition
+	<where>
+		<if test='ConditionValue!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select DegreeTypeConditionID,ConditionValue,EnterpriseQueryConditionID from DegreeTypeCondition
+	<where>
+		<if test='ConditionValue!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

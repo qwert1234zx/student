@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.university.statistics.requiredcourse.dao.UniStaRequiredCourseMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.university.statistics.requiredcourse.entity.RequiredCourse" >
+	
+	<id column="RequiredCourseID" property="RequiredCourseID" jdbcType="INTEGER"/>
+	<result column="Grade" property="Grade" jdbcType="INTEGER"/>
+	<result column="CourseName" property="CourseName" jdbcType="VARCHAR"/>
+	<result column="DirectionID" property="DirectionID" jdbcType="INTEGER"/>
+	<result column="SpecialityID" property="SpecialityID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	RequiredCourseID,Grade,CourseName,DirectionID,SpecialityID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="RequiredCourseId">
+      SELECT LAST_INSERT_ID() AS RequiredCourseId_AI
+    </selectKey>
+    insert into RequiredCourse(RequiredCourseID,Grade,CourseName,DirectionID,SpecialityID) values (#{RequiredCourseId_AI},#{Grade},#{CourseName},#{DirectionID},#{SpecialityID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from RequiredCourse where RequiredCourseId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update RequiredCourse set Grade=#{Grade},CourseName=#{CourseName},DirectionID=#{DirectionID},SpecialityID=#{SpecialityID}
+    where RequiredCourseId = #{RequiredCourseId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select RequiredCourseID,Grade,CourseName,DirectionID,SpecialityID from RequiredCourse
+    where RequiredCourseId = #{RequiredCourseId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(RequiredCourseId) from RequiredCourse
+	<where>
+		<if test='Grade!=null'>
+		</if>
+		<if test='CourseName!=null'>
+			 and CourseName like  '%' #{CourseName} '%'
+		</if>
+		<if test='DirectionID!=null'>
+		</if>
+		<if test='SpecialityID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select RequiredCourseID,Grade,CourseName,DirectionID,SpecialityID from RequiredCourse
+	<where>
+		<if test='Grade!=null'>
+		</if>
+		<if test='CourseName!=null'>
+			 and CourseName like  '%' #{CourseName} '%'
+		</if>
+		<if test='DirectionID!=null'>
+		</if>
+		<if test='SpecialityID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.government.statistics.province.dao.GovStaProvinceMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.government.statistics.province.entity.Province" >
+	
+	<id column="ProvinceID" property="ProvinceID" jdbcType="INTEGER"/>
+	<result column="ProvinceName" property="ProvinceName" jdbcType="VARCHAR"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	ProvinceID,ProvinceName
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="ProvinceId">
+      SELECT LAST_INSERT_ID() AS ProvinceId_AI
+    </selectKey>
+    insert into Province(ProvinceID,ProvinceName) values (#{ProvinceId_AI},#{ProvinceName})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Province where ProvinceId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Province set ProvinceName=#{ProvinceName}
+    where ProvinceId = #{ProvinceId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select ProvinceID,ProvinceName from Province
+    where ProvinceId = #{ProvinceId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(ProvinceId) from Province
+	<where>
+		<if test='ProvinceName!=null'>
+			 and ProvinceName like  '%' #{ProvinceName} '%'
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select ProvinceID,ProvinceName from Province
+	<where>
+		<if test='ProvinceName!=null'>
+			 and ProvinceName like  '%' #{ProvinceName} '%'
+		</if>
+</where>
+  </select>
+</mapper>

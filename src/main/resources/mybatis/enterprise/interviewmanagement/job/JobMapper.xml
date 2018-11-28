@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.interviewmanagement.job.dao.EntIntJobMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.interviewmanagement.job.entity.Job" >
+	
+	<id column="JobID" property="JobID" jdbcType="INTEGER"/>
+	<result column="ExpirationDate" property="ExpirationDate" jdbcType="DATE"/>
+	<result column="UpperSalary" property="UpperSalary" jdbcType="INTEGER"/>
+	<result column="LowerSalary" property="LowerSalary" jdbcType="INTEGER"/>
+	<result column="PersonNumber" property="PersonNumber" jdbcType="INTEGER"/>
+	<result column="Requirement" property="Requirement" jdbcType="VARCHAR"/>
+	<result column="Duty" property="Duty" jdbcType="VARCHAR"/>
+	<result column="JobName" property="JobName" jdbcType="VARCHAR"/>
+	<result column="EnterpriseID" property="EnterpriseID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	JobID,ExpirationDate,UpperSalary,LowerSalary,PersonNumber,Requirement,Duty,JobName,EnterpriseID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="JobId">
+      SELECT LAST_INSERT_ID() AS JobId_AI
+    </selectKey>
+    insert into Job(JobID,ExpirationDate,UpperSalary,LowerSalary,PersonNumber,Requirement,Duty,JobName,EnterpriseID) values (#{JobId_AI},#{ExpirationDate},#{UpperSalary},#{LowerSalary},#{PersonNumber},#{Requirement},#{Duty},#{JobName},#{EnterpriseID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Job where JobId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Job set ExpirationDate=#{ExpirationDate},UpperSalary=#{UpperSalary},LowerSalary=#{LowerSalary},PersonNumber=#{PersonNumber},Requirement=#{Requirement},Duty=#{Duty},JobName=#{JobName},EnterpriseID=#{EnterpriseID}
+    where JobId = #{JobId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select JobID,ExpirationDate,UpperSalary,LowerSalary,PersonNumber,Requirement,Duty,JobName,EnterpriseID from Job
+    where JobId = #{JobId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(JobId) from Job
+	<where>
+		<if test='ExpirationDate!=null'>
+		</if>
+		<if test='UpperSalary!=null'>
+		</if>
+		<if test='LowerSalary!=null'>
+		</if>
+		<if test='PersonNumber!=null'>
+		</if>
+		<if test='Requirement!=null'>
+			 and Requirement like  '%' #{Requirement} '%'
+		</if>
+		<if test='Duty!=null'>
+			 and Duty like  '%' #{Duty} '%'
+		</if>
+		<if test='JobName!=null'>
+			 and JobName like  '%' #{JobName} '%'
+		</if>
+		<if test='EnterpriseID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select JobID,ExpirationDate,UpperSalary,LowerSalary,PersonNumber,Requirement,Duty,JobName,EnterpriseID from Job
+	<where>
+		<if test='ExpirationDate!=null'>
+		</if>
+		<if test='UpperSalary!=null'>
+		</if>
+		<if test='LowerSalary!=null'>
+		</if>
+		<if test='PersonNumber!=null'>
+		</if>
+		<if test='Requirement!=null'>
+			 and Requirement like  '%' #{Requirement} '%'
+		</if>
+		<if test='Duty!=null'>
+			 and Duty like  '%' #{Duty} '%'
+		</if>
+		<if test='JobName!=null'>
+			 and JobName like  '%' #{JobName} '%'
+		</if>
+		<if test='EnterpriseID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

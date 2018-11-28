@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.university.studentmanagement.academy.dao.UniStuAcademyMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.university.studentmanagement.academy.entity.Academy" >
+	
+	<id column="AcademyID" property="AcademyID" jdbcType="INTEGER"/>
+	<result column="Description" property="Description" jdbcType="VARCHAR"/>
+	<result column="AcademyName" property="AcademyName" jdbcType="VARCHAR"/>
+	<result column="UniversityID" property="UniversityID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	AcademyID,Description,AcademyName,UniversityID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="AcademyId">
+      SELECT LAST_INSERT_ID() AS AcademyId_AI
+    </selectKey>
+    insert into Academy(AcademyID,Description,AcademyName,UniversityID) values (#{AcademyId_AI},#{Description},#{AcademyName},#{UniversityID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Academy where AcademyId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Academy set Description=#{Description},AcademyName=#{AcademyName},UniversityID=#{UniversityID}
+    where AcademyId = #{AcademyId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select AcademyID,Description,AcademyName,UniversityID from Academy
+    where AcademyId = #{AcademyId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(AcademyId) from Academy
+	<where>
+		<if test='Description!=null'>
+			 and Description like  '%' #{Description} '%'
+		</if>
+		<if test='AcademyName!=null'>
+			 and AcademyName like  '%' #{AcademyName} '%'
+		</if>
+		<if test='UniversityID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select AcademyID,Description,AcademyName,UniversityID from Academy
+	<where>
+		<if test='Description!=null'>
+			 and Description like  '%' #{Description} '%'
+		</if>
+		<if test='AcademyName!=null'>
+			 and AcademyName like  '%' #{AcademyName} '%'
+		</if>
+		<if test='UniversityID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

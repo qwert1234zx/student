@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.studentsearch.selectedcoursecondition.dao.EntStuSelectedCourseConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.studentsearch.selectedcoursecondition.entity.SelectedCourseCondition" >
+	
+	<id column="SelectedCourseConditionID" property="SelectedCourseConditionID" jdbcType="INTEGER"/>
+	<result column="Score" property="Score" jdbcType="VARCHAR"/>
+	<result column="Operation" property="Operation" jdbcType="VARCHAR"/>
+	<result column="CourseID" property="CourseID" jdbcType="INTEGER"/>
+	<result column="GroupNumber" property="GroupNumber" jdbcType="INTEGER"/>
+	<result column="EnterpriseQueryConditionID" property="EnterpriseQueryConditionID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	SelectedCourseConditionID,Score,Operation,CourseID,GroupNumber,EnterpriseQueryConditionID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="SelectedCourseConditionId">
+      SELECT LAST_INSERT_ID() AS SelectedCourseConditionId_AI
+    </selectKey>
+    insert into SelectedCourseCondition(SelectedCourseConditionID,Score,Operation,CourseID,GroupNumber,EnterpriseQueryConditionID) values (#{SelectedCourseConditionId_AI},#{Score},#{Operation},#{CourseID},#{GroupNumber},#{EnterpriseQueryConditionID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from SelectedCourseCondition where SelectedCourseConditionId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update SelectedCourseCondition set Score=#{Score},Operation=#{Operation},CourseID=#{CourseID},GroupNumber=#{GroupNumber},EnterpriseQueryConditionID=#{EnterpriseQueryConditionID}
+    where SelectedCourseConditionId = #{SelectedCourseConditionId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select SelectedCourseConditionID,Score,Operation,CourseID,GroupNumber,EnterpriseQueryConditionID from SelectedCourseCondition
+    where SelectedCourseConditionId = #{SelectedCourseConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(SelectedCourseConditionId) from SelectedCourseCondition
+	<where>
+		<if test='Score!=null'>
+		</if>
+		<if test='Operation!=null'>
+			 and Operation like  '%' #{Operation} '%'
+		</if>
+		<if test='CourseID!=null'>
+		</if>
+		<if test='GroupNumber!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select SelectedCourseConditionID,Score,Operation,CourseID,GroupNumber,EnterpriseQueryConditionID from SelectedCourseCondition
+	<where>
+		<if test='Score!=null'>
+		</if>
+		<if test='Operation!=null'>
+			 and Operation like  '%' #{Operation} '%'
+		</if>
+		<if test='CourseID!=null'>
+		</if>
+		<if test='GroupNumber!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.enterprise.studentsearch.selectedgradecondition.dao.EntStuSelectedGradeConditionMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.enterprise.studentsearch.selectedgradecondition.entity.SelectedGradeCondition" >
+	
+	<id column="SelectedGradeConditionID" property="SelectedGradeConditionID" jdbcType="INTEGER"/>
+	<result column="SelectedGrade" property="SelectedGrade" jdbcType="INTEGER"/>
+	<result column="EnterpriseQueryConditionID" property="EnterpriseQueryConditionID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	SelectedGradeConditionID,SelectedGrade,EnterpriseQueryConditionID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="SelectedGradeConditionId">
+      SELECT LAST_INSERT_ID() AS SelectedGradeConditionId_AI
+    </selectKey>
+    insert into SelectedGradeCondition(SelectedGradeConditionID,SelectedGrade,EnterpriseQueryConditionID) values (#{SelectedGradeConditionId_AI},#{SelectedGrade},#{EnterpriseQueryConditionID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from SelectedGradeCondition where SelectedGradeConditionId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update SelectedGradeCondition set SelectedGrade=#{SelectedGrade},EnterpriseQueryConditionID=#{EnterpriseQueryConditionID}
+    where SelectedGradeConditionId = #{SelectedGradeConditionId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select SelectedGradeConditionID,SelectedGrade,EnterpriseQueryConditionID from SelectedGradeCondition
+    where SelectedGradeConditionId = #{SelectedGradeConditionId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(SelectedGradeConditionId) from SelectedGradeCondition
+	<where>
+		<if test='SelectedGrade!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select SelectedGradeConditionID,SelectedGrade,EnterpriseQueryConditionID from SelectedGradeCondition
+	<where>
+		<if test='SelectedGrade!=null'>
+		</if>
+		<if test='EnterpriseQueryConditionID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>

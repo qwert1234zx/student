@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="universityrecruit.university.specialitymanagement.specialty.dao.UniSpeSpecialtyMapper" >
+  <resultMap id="BaseResultMap" type="universityrecruit.university.specialitymanagement.specialty.entity.Specialty" >
+	
+	<id column="SpecialtyID" property="SpecialtyID" jdbcType="INTEGER"/>
+	<result column="Description" property="Description" jdbcType="VARCHAR"/>
+	<result column="Degree" property="Degree" jdbcType="INTEGER"/>
+	<result column="SpecialityName" property="SpecialityName" jdbcType="VARCHAR"/>
+	<result column="AcademyID" property="AcademyID" jdbcType="INTEGER"/>
+	<result column="UniversityID" property="UniversityID" jdbcType="INTEGER"/>
+
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	SpecialtyID,Description,Degree,SpecialityName,AcademyID,UniversityID
+  </sql>
+
+  <!--因为采用AJAX通过Map<String,Object>进行传参，所以主键为String，用下面简洁的方式就不能实现自增，parameterType用Entity方式可以
+  <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="TestTableId">
+  -->
+  <insert id="insert" parameterType="map">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="SpecialtyId">
+      SELECT LAST_INSERT_ID() AS SpecialtyId_AI
+    </selectKey>
+    insert into Specialty(SpecialtyID,Description,Degree,SpecialityName,AcademyID,UniversityID) values (#{SpecialtyId_AI},#{Description},#{Degree},#{SpecialityName},#{AcademyID},#{UniversityID})
+  </insert>
+  
+  <delete id="deleteByIdList" parameterType="List">
+    delete from Specialty where SpecialtyId in
+    <foreach collection="list" index="index" item="Ids" open="(" close=")" separator=",">
+      #{Ids}
+    </foreach>
+  </delete>
+
+  <update id="update" parameterType="map">
+    update Specialty set Description=#{Description},Degree=#{Degree},SpecialityName=#{SpecialityName},AcademyID=#{AcademyID},UniversityID=#{UniversityID}
+    where SpecialtyId = #{SpecialtyId}
+  </update>
+
+  <select id="selectByID" resultMap="BaseResultMap" parameterType="Object">
+    select SpecialtyID,Description,Degree,SpecialityName,AcademyID,UniversityID from Specialty
+    where SpecialtyId = #{SpecialtyId}
+  </select>
+
+  <select id="selectCountByCondition" resultMap="BaseResultMap" parameterType="map">
+    select count(SpecialtyId) from Specialty
+	<where>
+		<if test='Description!=null'>
+			 and Description like  '%' #{Description} '%'
+		</if>
+		<if test='Degree!=null'>
+		</if>
+		<if test='SpecialityName!=null'>
+			 and SpecialityName like  '%' #{SpecialityName} '%'
+		</if>
+		<if test='AcademyID!=null'>
+		</if>
+		<if test='UniversityID!=null'>
+		</if>
+</where>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select SpecialtyID,Description,Degree,SpecialityName,AcademyID,UniversityID from Specialty
+	<where>
+		<if test='Description!=null'>
+			 and Description like  '%' #{Description} '%'
+		</if>
+		<if test='Degree!=null'>
+		</if>
+		<if test='SpecialityName!=null'>
+			 and SpecialityName like  '%' #{SpecialityName} '%'
+		</if>
+		<if test='AcademyID!=null'>
+		</if>
+		<if test='UniversityID!=null'>
+		</if>
+</where>
+  </select>
+</mapper>
